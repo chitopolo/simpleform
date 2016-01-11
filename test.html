@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>Daniel munoz Project</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+<h1>Servicio de Laboratorio</h1>
+    <form>
+    
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox1">
+        Hemograma
+      </label>
+    </div>
+
+    <h1>Quimica sanguinea</h1>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox2">
+        Glucemia
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox3">
+        HbA1c
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox4">
+        Creatinina
+      </label>
+    </div>  
+
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox5">
+        Ac. Urico
+      </label>
+    </div>  
+
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox6">
+        Glucemia 2H
+      </label>
+    </div>  
+
+    <h1>Perfil Lipidico</h1>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox7">
+        Colesterol
+      </label>
+    </div>  
+
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="checkbox8">
+       Triglicéridos
+      </label>
+    </div>  
+
+
+    
+
+    <!-- demas campos -->
+
+    <button class="saveNow btn btn-primary">Continuar</button>
+    </form>
+
+<script src="jquery.js"></script>
+
+<script>
+
+var PathToURL = "CHANGE_PATH_TO_URL"
+
+  var checkBox1 = $('.checkbox1').val();
+  var checkBox2 = $('.checkbox2').val();
+  var checkBox3 = $('.checkbox3').val();
+  var checkBox4 = $('.checkbox4').val();
+  var checkBox5 = $('.checkbox5').val();
+  var checkBox6 = $('.checkbox6').val();
+  var checkBox7 = $('.checkbox7').val();
+  var checkBox8 = $('.checkbox8').val();
+
+// variables to send
+
+//in order to know to who's id we are talking about you should pass the patient id via get on the url let say url/path?id=123456 so once you get the id you can sended via AJAX with the entire data to save 
+
+    $('.saveNow').on('click', function(){
+        $.ajax({
+          method: "POST",
+          url: PathToURL,
+          data: { id: "TODO: GET THE ID FROM THE URL", checkbox1:checkbox1, checkbox2:checkbox2, checkbox3:checkbox3, checkbox4:checkbox4, checkbox5:checkbox5, checkbox6:checkbox6, checkbox7:checkbox7, checkbox8:checkbox8 }
+        })
+          .done(function( msg ) {
+            alert( "Data Saved: " + msg );
+          });
+    });
+
+</script>
+</body>
+</html>

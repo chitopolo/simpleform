@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>Daniel munoz Project</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <form>
+    <h4>Nombres</h4>
+    <input class="names"/>
+
+    <h4>Primer Apellido</h4>
+    <input class="lastName"/>
+
+    <h4>Segundo Apellido</h4>
+    <input class="maidenName"/>
+
+    <h4>Fecha Nacimiento</h4>
+    <input class="birthDate" placeholder="DD/MM/AAAA"/>
+
+    <h4>Lugar de Nacimiento</h4>
+    <input class="city"/>
+
+    <!-- demas campos -->
+
+    <button class="saveNow btn btn-primary">Guardar</button>
+    </form>
+
+<script src="jquery.js"></script>
+
+<script>
+
+var PathToURL = "CHANGE_PATH_TO_URL"
+
+  var names = $('.names').val();
+  var lastName = $('.lastName').val();
+  var maidenName = $('.maidenName').val();
+  var birthDate = $('.birthDate').val();
+  var city = $('.city').val();
+
+
+
+    $('.saveNow').on('click', function(){
+        $.ajax({
+          method: "POST",
+          url: PathToURL,
+          data: { names: names, lastName: lastName, maidenName:maidenName, birthDate: birthDate, city:city }
+        })
+          .done(function( msg ) {
+            alert( "Data Saved: " + msg );
+          });
+    });
+
+</script>
+</body>
+</html>

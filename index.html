@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Daniel munoz Project</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+
+    <input class="searchField"/>
+    <button class="searchNow btn btn-primary">Buscar</button>
+
+    <div id="info"></div>
+
+
+<script src="jquery.js"></script>
+
+<script>
+
+var PathToURL = "CHANGE_PATH_TO_URL"
+
+    $('.searchNow').on('click', function(){
+        $.ajax({
+              url: PathToURL,
+              data: {
+                 format: 'json'
+              },
+              error: function() {
+                 $('#info').html('<p>An error has occurred</p>');
+              },
+              dataType: 'jsonp',
+              success: function(data) {
+                 var $title = $('<h1>').text(data.patient[0].names);
+                 $('#info')
+                    .append($title);
+              },
+              type: 'GET'
+           });
+
+        alert('clicked!')
+    });
+
+</script>
+</body>
+</html>

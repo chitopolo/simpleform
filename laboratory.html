@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>Daniel munoz Project</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <form>
+    <h1>Hemograma</h1>
+    <h4>Eritrocitos</h4>
+    <input class="eritrocito"/>4.072.000 - 5.090.000
+
+    <h4>Hemoglobina</h4>
+    <input class="hemoglobina"/> 12.0 - 15.0 gr%
+
+    <h4>Hematrocito</h4>
+    <input class="hematrocito"/> 37 - 45 %
+    <h1>Serie Blanca</h1>
+
+    <h4>Leucocitos</h4>
+    <input class="leucocitos" /> 5.000 - 10.000 /mm3
+    <h1>Rec. Diferencial</h1>
+
+    <h4>Segmentado</h4>
+    <input class="segmentado"/> 52 - 65%
+
+    <h4>Linfocitos</h4>
+    <input class="linfocitos"/>25 - 40%
+
+    <h4>Monocitos</h4>
+    <input class="monocitos"/> 2 - 8 %
+
+
+
+    <button class="saveNow btn btn-primary">Guardar</button>
+    </form>
+
+<script src="jquery.js"></script>
+
+<script>
+
+var PathToURL = "CHANGE_PATH_TO_URL"
+
+  var eritrocito = $('.eritrocito').val();
+  var hemoglobina = $('.hemoglobina').val();
+  var hematrocito = $('.hematrocito').val();
+  var leucocitos = $('.leucocitos').val();
+  var segmentado = $('.segmentado').val();
+  var linfocitos = $('.linfocitos').val();
+  var segmentado = $('.segmentado').val();
+
+
+
+    $('.saveNow').on('click', function(){
+        $.ajax({
+          method: "POST",
+          url: PathToURL,
+          data: { eritrocito: eritrocito, hemoglobina: hemoglobina, hematrocito:hematrocito, leucocitos: leucocitos, segmentado:segmentado , linfocitos:linfocitos, monocitos:monocitos }
+        })
+          .done(function( msg ) {
+            alert( "Data Saved: " + msg );
+          });
+    });
+
+</script>
+</body>
+</html>
