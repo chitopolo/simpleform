@@ -1,41 +1,51 @@
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Daniel munoz Project</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
-<body>
-
-    <input class="searchField"/>
-    <button class="searchNow btn btn-primary">Buscar</button>
-
-    <div id="info"></div>
-
-
-<script src="jquery.js"></script>
+<body class="container">
+    <div class="col-md-5">
+        <input class="form-control searchField" placeholder="Buscar nuevo paciente"/>
+        <button class="searchNow btn btn-primary">Buscar</button>
+        <a href="createPatient.html"><button class="addNew btn btn-primary">Añadir nuevo paciente</button></a>
+        <div id="info"></div>
+    </div>
+<script src="js/jquery.js"></script>
 
 <script>
-
-var PathToURL = "CHANGE_PATH_TO_URL"
-
     $('.searchNow').on('click', function(){
+    var term = $('.searchField').val()
+    var PathToURL = "http://10.0.1.12:3000/api/findPatient/"+term
+        $('#info').empty()
         $.ajax({
+              type: 'GET',
               url: PathToURL,
-              data: {
-                 format: 'json'
-              },
-              error: function() {
-                 $('#info').html('<p>An error has occurred</p>');
-              },
               dataType: 'jsonp',
               success: function(data) {
-                 var $title = $('<h1>').text(data.patient[0].names);
+                console.log(data)
+                var patients = data.Patients;
+                patients.forEach(function(value){
+                    console.log("Item:", value)
                  $('#info')
-                    .append($title);
+                 .append($('<h4>').text(value.firstName.toString() + " " + value.lastName.toString()))
+                 .append($('<a/>', {
+                    text: 'Link',
+                    class:'btn btn-primary',
+                    href: 'laboratory.html?id='+value.id.toString()
+                 }))
+                 .append($('<button/>', {
+                                text: 'Seleccionar', //set text 1 to 10
+                                id: value.id.toString(),
+                                class:'btn btn-primary'
+                        })
+                 )
+                    
+                })
               },
-              type: 'GET'
+              
            });
 
-        alert('clicked!')
     });
 
 </script>

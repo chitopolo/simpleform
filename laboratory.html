@@ -1,65 +1,132 @@
 <html>
 <head>
     <title>Daniel munoz Project</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body>
-    <form>
-    <h1>Hemograma</h1>
-    <h4>Eritrocitos</h4>
-    <input class="eritrocito"/>4.072.000 - 5.090.000
 
-    <h4>Hemoglobina</h4>
-    <input class="hemoglobina"/> 12.0 - 15.0 gr%
+    <div id="allTheInputs" class="container"></div>
 
-    <h4>Hematrocito</h4>
-    <input class="hematrocito"/> 37 - 45 %
-    <h1>Serie Blanca</h1>
+    <button  id="cancel" class="btn btn-danger"> Volver</button>
+    <button id="saveNow" class="btn btn-primary"> Guardar</button>
+    <button id="showReport" class="btn btn-success">Reporte</button>
 
-    <h4>Leucocitos</h4>
-    <input class="leucocitos" /> 5.000 - 10.000 /mm3
-    <h1>Rec. Diferencial</h1>
-
-    <h4>Segmentado</h4>
-    <input class="segmentado"/> 52 - 65%
-
-    <h4>Linfocitos</h4>
-    <input class="linfocitos"/>25 - 40%
-
-    <h4>Monocitos</h4>
-    <input class="monocitos"/> 2 - 8 %
-
-
-
-    <button class="saveNow btn btn-primary">Guardar</button>
-    </form>
-
-<script src="jquery.js"></script>
+<script src="js/jquery.js"></script>
 
 <script>
+    
+$( document ).ready(function() {
 
-var PathToURL = "CHANGE_PATH_TO_URL"
+    $('button#showReport').hide();
 
-  var eritrocito = $('.eritrocito').val();
-  var hemoglobina = $('.hemoglobina').val();
-  var hematrocito = $('.hematrocito').val();
-  var leucocitos = $('.leucocitos').val();
-  var segmentado = $('.segmentado').val();
-  var linfocitos = $('.linfocitos').val();
-  var segmentado = $('.segmentado').val();
+    var dataToSend
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
 
+    var gotTheId = $.urlParam('id')
+    var PathToURL = "http://10.0.1.12:3000/api/labTests"
 
+        $.ajax({
+              type: 'GET',
+              url: PathToURL,
+              dataType: 'jsonp',
+              success: function(data) {
+                var stuff = data.LabTests;
+                stuff.forEach(function(value){
+                    console.log("value: ",value)
+                    $('#allTheInputs')
+                    .append($('<div class="row"/>')
+                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                            text: value.name,
+                            })))
+                        .append($('<div class="col-md-2"/>')
+                         .append($('<input/>', {
+                                id: value.id,
+                                name: value.name,
+                                class: value.minVal +'-'+ value.maxVal
+                        }))).append($('<div class="col-md-3"/>')
+                         .append($('<p/>',{
+                            text: value.minVal +'-'+ value.maxVal
+                        }))))
+                        
+                })
+              }
+          })
 
-    $('.saveNow').on('click', function(){
+    $('#saveNow').on('click', function(){
+
+        var PathToURL = "http://10.0.1.12:3000/api/labAnalysis"
+
+        var chunk = [];
+
+         $('#allTheInputs :input').each(function(){
+          var input = $(this); // This is the jquery object of the input, do what you will
+          console.log("input->", input.val() , ' with input ', input)
+          var value = {
+            idTest: input[0].id,
+            valueTest: input.val() || -1,
+            name: input[0].name,
+            range: input[0].className
+          }
+          chunk.push(value)
+         });
+
+         dataToSend = {
+            patientId: gotTheId,
+            testResults: chunk
+         }
+         console.log("data to send:", dataToSend)
         $.ajax({
           method: "POST",
           url: PathToURL,
-          data: { eritrocito: eritrocito, hemoglobina: hemoglobina, hematrocito:hematrocito, leucocitos: leucocitos, segmentado:segmentado , linfocitos:linfocitos, monocitos:monocitos }
-        })
-          .done(function( msg ) {
+          data: dataToSend
+        }).done(function( msg ) {
             alert( "Data Saved: " + msg );
-          });
+      });
+    $('button#showReport').show();
+    $('button#saveNow').hide();
     });
+
+
+    $('#showReport').on('click', function(){
+
+        $('#allTheInputs').empty();
+        
+         var creatingInputs = dataToSend.testResults;
+        console.log("The data:", dataToSend.testResults);
+        creatingInputs.forEach(function(value){
+            if(value.valueTest!== -1){
+                $('#allTheInputs')
+                .append($('<div class="row-fluid"/>')
+                    .append($('<div class="col-sm-4"/>')
+                         .append($('<h4/>',{text:value.name})))
+                            .append($('<div class="col-sm-4"/>')
+                         .append($('<h4/>',{text:value.valueTest})))
+                            .append($('<div class="col-sm-4"/>')
+                         .append($('<h4/>',{text:value.range}))))
+                    
+            }
+        })
+
+
+    $('button#showReport').hide();
+    $('button#cancel').text('Atras');
+    })
+
+    $('button#cancel').on('click', function(){
+        
+        if(confirm('Esta seguro?')){
+            $(location).attr('href','index.html');
+        }
+
+    });
+
+
+})
+
+
 
 </script>
 </body>

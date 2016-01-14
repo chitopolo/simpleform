@@ -1,51 +1,83 @@
 <html>
 <head>
     <title>Daniel munoz Project</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body>
-    <form>
+<script src="js/jquery.js"></script>
+    <div class="container">
     <h4>Nombres</h4>
-    <input class="names"/>
+    <input id="firstName" class="form-control" type="text"/>
 
     <h4>Primer Apellido</h4>
-    <input class="lastName"/>
+    <input id="lastName" class="form-control" type="text"/>
 
     <h4>Segundo Apellido</h4>
-    <input class="maidenName"/>
+    <input id="lastName2" class="form-control" type="text"/>
 
     <h4>Fecha Nacimiento</h4>
-    <input class="birthDate" placeholder="DD/MM/AAAA"/>
+    <input id="birthDate" class="form-control" placeholder="DD/MM/AAAA" type="text"/>
 
-    <h4>Lugar de Nacimiento</h4>
-    <input class="city"/>
+    <h4>Sexo</h4>
+    <input id="gender" class="form-control" type="text"/>
+
+    <h4>Departamento</h4>
+    <input id="department" class="form-control" type="text"/>
+
+    <h4>Celular</h4>
+    <input id="mobileNumber" class="form-control" type="text"/>
+
+    <h4>Carnet de identidad</h4>
+    <input id="nationalId" class="form-control" type="text"/>
+
+    <h4>Origen</h4>
+    <input id="nationalIdLocation"  class="form-control" type="text"/>
 
     <!-- demas campos -->
 
+    <a href="index.html"><button class="btn btn-warning">Volver</button></a>
     <button class="saveNow btn btn-primary">Guardar</button>
-    </form>
+    </div>
 
-<script src="jquery.js"></script>
 
 <script>
 
-var PathToURL = "CHANGE_PATH_TO_URL"
 
-  var names = $('.names').val();
-  var lastName = $('.lastName').val();
-  var maidenName = $('.maidenName').val();
-  var birthDate = $('.birthDate').val();
-  var city = $('.city').val();
+
+
+
+
 
 
 
     $('.saveNow').on('click', function(){
+
+        var PathToURL = "http://10.0.1.12:3000/api/patient"
+        var firstName = $('#firstName').val();
+        var lastName = $('#lastName').val();
+        var lastName2 = $('#lastName2').val();
+        var birthDate = $('#birthDate').val();
+        var gender = $('#gender').val();
+        var department = $('#department').val();
+        var mobileNumber = $('#mobileNumber').val();
+        var nationalId = $('#nationalId').val();
+        var nationalIdLocation = $('#nationalIdLocation').val();
+   
         $.ajax({
           method: "POST",
           url: PathToURL,
-          data: { names: names, lastName: lastName, maidenName:maidenName, birthDate: birthDate, city:city }
-        })
-          .done(function( msg ) {
+          data: { 
+            firstName: firstName, 
+            lastName: lastName, 
+            lastName2:lastName2, 
+            birthDate: birthDate, 
+            gender: 0, 
+            department:department, 
+            mobileNumber:mobileNumber, 
+            nationalId:nationalId, 
+            nationalIdLocation: nationalIdLocation 
+        }
+        }).done(function( msg ) {
             alert( "Data Saved: " + msg );
           });
     });
