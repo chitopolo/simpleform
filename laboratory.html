@@ -1,15 +1,39 @@
 <html>
 <head>
-    <title>Daniel munoz Project</title>
+    <title>Laboratorio - Ingreso de Resultados</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body>
+  <br>
+  <h4><p align="center">Resultados</p></h4>
+  <br>
+  <!-- Meter nombre del paciente aqui! -->
+  <br>
+  <br>
+  <div id="allTheInputs" class="container" align="center"></div>
+  <br>
+  <br>
+  <div id="confirmationDiv" align="center">
+    <input type="checkbox" id="checkme"> Estoy seguro/a que los datos ingresados son correctos.</input>
+  </div>
 
-    <div id="allTheInputs" class="container"></div>
+  <br>
+  <div align = "center">
+    <button  id="cancel" class="btn btn-danger hidden-print"> Salir</button>
+    <button id="saveNow" class="btn btn-primary" disabled="true"> Guardar</button>
+    <button id="showReport" class="btn btn-success hidden-print">Ver Reporte</button>
+  </div>
 
-    <button  id="cancel" class="btn btn-danger"> Volver</button>
-    <button id="saveNow" class="btn btn-primary"> Guardar</button>
-    <button id="showReport" class="btn btn-success">Reporte</button>
+  <script type="text/javascript">
+    var checker = document.getElementById('checkme');
+    var sendbtn = document.getElementById('saveNow');
+    checker.onchange = function() {
+      sendbtn.disabled = !this.checked;
+    };
+  </script>
+  <br>
+  <br>
+
 
 <script src="js/jquery.js"></script>
 
@@ -26,7 +50,8 @@ $( document ).ready(function() {
     }
 
     var gotTheId = $.urlParam('id')
-    var PathToURL = "http://10.0.1.12:3000/api/labTests"
+    var fullName = $.urlParam('fullName')
+    var PathToURL = "http://localhost:3000/api/labTests"
 
         $.ajax({
               type: 'GET',
@@ -36,19 +61,43 @@ $( document ).ready(function() {
                 var stuff = data.LabTests;
                 stuff.forEach(function(value){
                     console.log("value: ",value)
+                    var minMax;
+                    if (value.minVal) {
+                      if (value.maxVal) {
+                        minMax = value.minVal +' - '+ value.maxVal  
+                      }
+                      else {
+                        minMax = "Mayor a " + value.minVal
+                      }
+                      
+                    }
+                    else {
+                      if (value.maxVal) {
+                        minMax = 'Hasta '+ value.maxVal
+                      }
+                      else {
+                        if (value.referenceVal) {
+                          minMax = value.referenceVal
+                        }
+                        else {
+                          minMax = ''
+                        }
+                      }
+                    }
+                    minMax = minMax + ' ' + value.unit
                     $('#allTheInputs')
                     .append($('<div class="row"/>')
-                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                         .append($('<div class="col-md-3"/>').append($('<h5/>', {
                             text: value.name,
                             })))
                         .append($('<div class="col-md-2"/>')
                          .append($('<input/>', {
                                 id: value.id,
                                 name: value.name,
-                                class: value.minVal +'-'+ value.maxVal
-                        }))).append($('<div class="col-md-3"/>')
+                                class: minMax
+                        }))).append($('<div class="col-md-3" align="right"/>')
                          .append($('<p/>',{
-                            text: value.minVal +'-'+ value.maxVal
+                            text: minMax
                         }))))
                         
                 })
@@ -57,7 +106,7 @@ $( document ).ready(function() {
 
     $('#saveNow').on('click', function(){
 
-        var PathToURL = "http://10.0.1.12:3000/api/labAnalysis"
+        var PathToURL = "http://localhost:3000/api/labAnalysis"
 
         var chunk = [];
 
@@ -83,7 +132,8 @@ $( document ).ready(function() {
           url: PathToURL,
           data: dataToSend
         }).done(function( msg ) {
-            alert( "Data Saved: " + msg );
+          document.getElementById('confirmationDiv').style.display = 'none'
+            alert( "Datos de laboratorio guardados");
       });
     $('button#showReport').show();
     $('button#saveNow').hide();
@@ -112,12 +162,12 @@ $( document ).ready(function() {
 
 
     $('button#showReport').hide();
-    $('button#cancel').text('Atras');
+    $('button#cancel').text('Volver al Menú');
     })
 
     $('button#cancel').on('click', function(){
         
-        if(confirm('Esta seguro?')){
+        if(confirm('Esta seguro que desea salir al menu principal?')){
             $(location).attr('href','index.html');
         }
 

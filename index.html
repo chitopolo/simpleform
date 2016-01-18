@@ -1,22 +1,33 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Daniel munoz Project</title>
+    <title>Laboratorio - Menú</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body class="container">
+  <br>
+  <br>
+  <br>
+  <br>
+  <p align="left">
+    <b>Centro Vivir con Diabetes - Servicio de Laboratorio</b>
+    </p>
+  <br>
+  <br>
     <div class="col-md-5">
         <input class="form-control searchField" placeholder="Buscar nuevo paciente"/>
+        <br>
         <button class="searchNow btn btn-primary">Buscar</button>
         <a href="createPatient.html"><button class="addNew btn btn-primary">Añadir nuevo paciente</button></a>
         <div id="info"></div>
     </div>
+
 <script src="js/jquery.js"></script>
 
 <script>
     $('.searchNow').on('click', function(){
     var term = $('.searchField').val()
-    var PathToURL = "http://10.0.1.12:3000/api/findPatient/"+term
+    var PathToURL = "http://localhost:3000/api/findPatient/"+term
         $('#info').empty()
         $.ajax({
               type: 'GET',
@@ -25,21 +36,18 @@
               success: function(data) {
                 console.log(data)
                 var patients = data.Patients;
+                $('#info')
+                .append($('<br><br> Resultados de la búsqueda: <br>'))
                 patients.forEach(function(value){
                     console.log("Item:", value)
                  $('#info')
-                 .append($('<h4>').text(value.firstName.toString() + " " + value.lastName.toString()))
+                 .append($('<h5>').text(value.firstName.toString() + " " + value.lastName.toString()))
                  .append($('<a/>', {
-                    text: 'Link',
+                    text: 'Seleccionar',
                     class:'btn btn-primary',
-                    href: 'laboratory.html?id='+value.id.toString()
+                    href: 'laboratory.html?id='+value.id.toString()+'?fullName='+value.firstName.toString()+' '+value.lastName.toString()
+                    // href: 'laboratory.html?id='+value.id.toString()
                  }))
-                 .append($('<button/>', {
-                                text: 'Seleccionar', //set text 1 to 10
-                                id: value.id.toString(),
-                                class:'btn btn-primary'
-                        })
-                 )
                     
                 })
               },

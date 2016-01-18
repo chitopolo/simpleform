@@ -1,43 +1,55 @@
 <html>
 <head>
-    <title>Daniel munoz Project</title>
+    <title>Laboratorio - Nuevo Paciente</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body>
+    <br>
+    <h4><p align="center">Crear paciente</p></h4>
+    <br>
 <script src="js/jquery.js"></script>
     <div class="container">
-    <h4>Nombres</h4>
+    <h5>Nombres</h5>
     <input id="firstName" class="form-control" type="text"/>
 
-    <h4>Primer Apellido</h4>
+    <h5>Primer Apellido</h5>
     <input id="lastName" class="form-control" type="text"/>
 
-    <h4>Segundo Apellido</h4>
+    <h5>Segundo Apellido</h5>
     <input id="lastName2" class="form-control" type="text"/>
 
-    <h4>Fecha Nacimiento</h4>
-    <input id="birthDate" class="form-control" placeholder="DD/MM/AAAA" type="text"/>
+    <h5>Fecha Nacimiento</h5>
+    <input id="birthDay" class="form-control" placeholder="DD" type="text"/>
+    <input id="birthMonth" class="form-control" placeholder="MM" type="text"/>
+    <input id="birthYear" class="form-control" placeholder="AAAA" type="text"/>
 
-    <h4>Sexo</h4>
-    <input id="gender" class="form-control" type="text"/>
+    <h5>Sexo</h5>
+    <form action="">
+  <input type="radio" name="gender" value="0"> Hombre<br>
+  <input type="radio" name="gender" value="1"> Mujer<br>
+</form>
 
-    <h4>Departamento</h4>
+    <h5>Departamento</h5>
     <input id="department" class="form-control" type="text"/>
 
-    <h4>Celular</h4>
+    <h5>Celular</h5>
     <input id="mobileNumber" class="form-control" type="text"/>
 
-    <h4>Carnet de identidad</h4>
+    <h5>Carnet de identidad</h5>
     <input id="nationalId" class="form-control" type="text"/>
 
-    <h4>Origen</h4>
+    <h5>Origen</h5>
     <input id="nationalIdLocation"  class="form-control" type="text"/>
 
     <!-- demas campos -->
-
+    <br>
+    <br>
     <a href="index.html"><button class="btn btn-warning">Volver</button></a>
     <button class="saveNow btn btn-primary">Guardar</button>
+    <br>
+    <br>
     </div>
+    <br>
 
 
 <script>
@@ -52,12 +64,13 @@
 
     $('.saveNow').on('click', function(){
 
-        var PathToURL = "http://10.0.1.12:3000/api/patient"
+        var PathToURL = "http://localhost:3000/api/patient"
         var firstName = $('#firstName').val();
         var lastName = $('#lastName').val();
         var lastName2 = $('#lastName2').val();
-        var birthDate = $('#birthDate').val();
-        var gender = $('#gender').val();
+        var birthDate = $('#birthYear').val() + "-" + $('#birthMonth').val() + "-" + $('#birthDay').val();
+        var gender = $('input[name="gender"]:checked').val();
+        // var gender = $('#gender').val();
         var department = $('#department').val();
         var mobileNumber = $('#mobileNumber').val();
         var nationalId = $('#nationalId').val();
@@ -71,14 +84,14 @@
             lastName: lastName, 
             lastName2:lastName2, 
             birthDate: birthDate, 
-            gender: 0, 
+            gender: gender, 
             department:department, 
             mobileNumber:mobileNumber, 
             nationalId:nationalId, 
             nationalIdLocation: nationalIdLocation 
         }
         }).done(function( msg ) {
-            alert( "Data Saved: " + msg );
+            alert( "Paciente guardado.");
           });
     });
 
