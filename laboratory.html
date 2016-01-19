@@ -8,7 +8,12 @@
   <h4><p align="center">Resultados</p></h4>
   <br>
   <!-- Meter nombre del paciente aqui! -->
+  <div id="fullNamePlace"></div>
   <br>
+  <div id="doctorNameInput">Medico: <input id="doctorName"></input></div>
+  <div id="doctorNameField"></div>
+  <br>
+  <div id="todayDate"></div>
   <br>
   <div id="allTheInputs" class="container" align="center"></div>
   <br>
@@ -49,9 +54,28 @@ $( document ).ready(function() {
         return results[1] || 0;
     }
 
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = dd+'/'+mm+'/'+yyyy;
+
+    $('#todayDate').text('Fecha: ' + today)
+
     var gotTheId = $.urlParam('id')
     var fullName = $.urlParam('fullName')
-    var PathToURL = "http://localhost:3000/api/labTests"
+    var decodedUri = decodeURIComponent(fullName);
+    $('#fullNamePlace').text('Nombre del Paciente: ' + decodedUri)
+    var PathToURL = "http://localhost:3000/api/labTests/" + gotTheId
 
         $.ajax({
               type: 'GET',
@@ -105,7 +129,7 @@ $( document ).ready(function() {
           })
 
     $('#saveNow').on('click', function(){
-
+        var doctorName = $('#doctorName').val()
         var PathToURL = "http://localhost:3000/api/labAnalysis"
 
         var chunk = [];
@@ -124,7 +148,8 @@ $( document ).ready(function() {
 
          dataToSend = {
             patientId: gotTheId,
-            testResults: chunk
+            testResults: chunk,
+            doctorName: doctorName
          }
          console.log("data to send:", dataToSend)
         $.ajax({
@@ -143,7 +168,9 @@ $( document ).ready(function() {
     $('#showReport').on('click', function(){
 
         $('#allTheInputs').empty();
-        
+        var doctorNameValue = $('#doctorName').val()
+        $('#doctorNameField').text('Medico: ' + doctorNameValue)
+        document.getElementById('doctorNameInput').style.display = 'none'
          var creatingInputs = dataToSend.testResults;
         console.log("The data:", dataToSend.testResults);
         creatingInputs.forEach(function(value){
@@ -151,18 +178,18 @@ $( document ).ready(function() {
                 $('#allTheInputs')
                 .append($('<div class="row-fluid"/>')
                     .append($('<div class="col-sm-4"/>')
-                         .append($('<h4/>',{text:value.name})))
+                         .append($('<h5/>',{text:value.name})))
                             .append($('<div class="col-sm-4"/>')
-                         .append($('<h4/>',{text:value.valueTest})))
+                         .append($('<h5/>',{text:value.valueTest})))
                             .append($('<div class="col-sm-4"/>')
-                         .append($('<h4/>',{text:value.range}))))
+                         .append($('<h5/>',{text:value.range}))))
                     
             }
         })
 
 
     $('button#showReport').hide();
-    $('button#cancel').text('Volver al Menú');
+    $('button#cancel').text('Volver al Menu');
     })
 
     $('button#cancel').on('click', function(){
