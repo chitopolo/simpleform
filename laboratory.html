@@ -84,6 +84,7 @@ $( document ).ready(function() {
               success: function(data) {
                 var stuff = data.LabTests;
                 var groupNameArray = [];
+                var subGroupNameArray = [];
                 stuff.forEach(function(value){
                     console.log("-->value: ",value)
                     var minMax;
@@ -111,10 +112,16 @@ $( document ).ready(function() {
                     }
                     minMax = minMax + ' ' + value.unit
                     var showGroupName = false
+                    var showSubGroupName = false
                     if ($.inArray(value.groupName, groupNameArray) == -1) {
                       groupNameArray.push(value.groupName)
                       // console.log(value.groupName + " added to group")
                       showGroupName = true
+                    }
+                    if ($.inArray(value.subGroupName, subGroupNameArray) == -1) {
+                      subGroupNameArray.push(value.subGroupName)
+                      // console.log(value.groupName + " added to group")
+                      showSubGroupName = true
                     }
 
                     if (showGroupName) {
@@ -128,8 +135,17 @@ $( document ).ready(function() {
                         }))
                          ))
 
-
-
+                    if (showSubGroupName) {
+                      $('#allTheInputs')
+                    .append($('<br><div align="right" class="row"/>')
+                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                            text: value.subGroupName,
+                            })))
+                        .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
+                          text: '',
+                        }))
+                         ))
+                    }
 
                       $('#allTheInputs')
                     .append($('<br><div class="row"/>')
@@ -147,6 +163,17 @@ $( document ).ready(function() {
                         }))))
                     }
                     else {
+                      if (showSubGroupName) {
+                      $('#allTheInputs')
+                    .append($('<br><div align="right" class="row"/>')
+                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                            text: value.subGroupName,
+                            })))
+                        .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
+                          text: '',
+                        }))
+                         ))
+                    }
                       $('#allTheInputs')
                     .append($('<div class="row"/>')
                          .append($('<div align="right" class="col-md-3"/>').append($('<h5/>', {
