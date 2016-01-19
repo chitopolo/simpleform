@@ -83,8 +83,9 @@ $( document ).ready(function() {
               dataType: 'jsonp',
               success: function(data) {
                 var stuff = data.LabTests;
+                var groupNameArray = [];
                 stuff.forEach(function(value){
-                    console.log("value: ",value)
+                    console.log("-->value: ",value)
                     var minMax;
                     if (value.minVal) {
                       if (value.maxVal) {
@@ -109,22 +110,61 @@ $( document ).ready(function() {
                       }
                     }
                     minMax = minMax + ' ' + value.unit
-                    $('#allTheInputs')
-                    .append($('<div class="row"/>')
-                         .append($('<div class="col-md-3"/>').append($('<h5/>', {
+                    var showGroupName = false
+                    if ($.inArray(value.groupName, groupNameArray) == -1) {
+                      groupNameArray.push(value.groupName)
+                      // console.log(value.groupName + " added to group")
+                      showGroupName = true
+                    }
+
+                    if (showGroupName) {
+                      $('#allTheInputs')
+                    .append($('<br><div align="right" class="row"/>')
+                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                            text: '',
+                            })))
+                        .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
+                          text: value.groupName,
+                        }))
+                         ))
+
+
+
+
+                      $('#allTheInputs')
+                    .append($('<br><div class="row"/>')
+                         .append($('<div align="right" class="col-md-3"/>').append($('<h5/>', {
                             text: value.name,
                             })))
-                        .append($('<div class="col-md-2"/>')
+                        .append($('<div class="col-md-3"/>')
                          .append($('<input/>', {
                                 id: value.id,
                                 name: value.name,
                                 class: minMax
-                        }))).append($('<div class="col-md-3" align="right"/>')
+                        }))).append($('<div class="col-md-2" align="right"/>')
                          .append($('<p/>',{
                             text: minMax
                         }))))
+                    }
+                    else {
+                      $('#allTheInputs')
+                    .append($('<div class="row"/>')
+                         .append($('<div align="right" class="col-md-3"/>').append($('<h5/>', {
+                            text: value.name,
+                            })))
+                        .append($('<div class="col-md-3"/>')
+                         .append($('<input/>', {
+                                id: value.id,
+                                name: value.name,
+                                class: minMax
+                        }))).append($('<div class="col-md-2" align="right"/>')
+                         .append($('<p/>',{
+                            text: minMax
+                        }))))
+                    }
                         
                 })
+              console.log("Array: " + groupNameArray)
               }
           })
 
