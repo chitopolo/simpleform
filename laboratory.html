@@ -5,6 +5,14 @@
 </head>
 <body>
   <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
   <h4><p align="center">Resultados</p></h4>
   <br>
   <!-- Meter nombre del paciente aqui! -->
@@ -75,7 +83,7 @@ $( document ).ready(function() {
     var fullName = $.urlParam('fullName')
     var decodedUri = decodeURIComponent(fullName);
     $('#fullNamePlace').text('Nombre del Paciente: ' + decodedUri)
-    var PathToURL = "http://localhost:3000/api/labTests/" + gotTheId
+    var PathToURL = "http://192.168.0.111:3000/api/labTests/" + gotTheId
 
         $.ajax({
               type: 'GET',
@@ -127,10 +135,10 @@ $( document ).ready(function() {
                     if (showGroupName) {
                       $('#allTheInputs')
                     .append($('<br><div align="right" class="row"/>')
-                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                         .append($('<div class="col-md-"/>').append($('<h4/>', {
                             text: '',
                             })))
-                        .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
+                        .append($('<div align="right" class="col-md-4"/>').append($('<h4/>', {
                           text: value.groupName,
                         }))
                          ))
@@ -138,7 +146,7 @@ $( document ).ready(function() {
                     if (showSubGroupName) {
                       $('#allTheInputs')
                     .append($('<br><div align="right" class="row"/>')
-                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                         .append($('<div class="col-md-4"/>').append($('<h4/>', {
                             text: value.subGroupName,
                             })))
                         .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
@@ -156,7 +164,8 @@ $( document ).ready(function() {
                          .append($('<input/>', {
                                 id: value.id,
                                 name: value.name,
-                                class: minMax
+                                class: minMax,
+                                alt: value.groupName + '|' + value.subGroupName + '|' + value.type
                         }))).append($('<div class="col-md-2" align="right"/>')
                          .append($('<p/>',{
                             text: minMax
@@ -166,7 +175,7 @@ $( document ).ready(function() {
                       if (showSubGroupName) {
                       $('#allTheInputs')
                     .append($('<br><div align="right" class="row"/>')
-                         .append($('<div class="col-md-3"/>').append($('<h4/>', {
+                         .append($('<div class="col-md-4"/>').append($('<h4/>', {
                             text: value.subGroupName,
                             })))
                         .append($('<div align="right" class="col-md-2"/>').append($('<h4/>', {
@@ -183,7 +192,8 @@ $( document ).ready(function() {
                          .append($('<input/>', {
                                 id: value.id,
                                 name: value.name,
-                                class: minMax
+                                class: minMax,
+                                alt: value.groupName + '|' + value.subGroupName + '|' + value.type
                         }))).append($('<div class="col-md-2" align="right"/>')
                          .append($('<p/>',{
                             text: minMax
@@ -197,20 +207,42 @@ $( document ).ready(function() {
 
     $('#saveNow').on('click', function(){
         var doctorName = $('#doctorName').val()
-        var PathToURL = "http://localhost:3000/api/labAnalysis"
+        var PathToURL = "http://192.168.0.111:3000/api/labAnalysis"
 
         var chunk = [];
 
          $('#allTheInputs :input').each(function(){
           var input = $(this); // This is the jquery object of the input, do what you will
-          console.log("input->", input.val() , ' with input ', input)
-          var value = {
-            idTest: input[0].id,
-            valueTest: input.val() || -1,
-            name: input[0].name,
-            range: input[0].className
+          // console.log("input->", input.val() , ' with input ', input)
+          // console.log("chunk: ", input[0].alt)
+          
+          var value
+          if (input.val()) {
+            var chunks = input[0].alt.split("|");
+            var labType = chunks[2]
+            console.log("labType: " + labType + "value: " + input.val())
+            if (labType == 1) {
+              value = {
+                idTest: input[0].id,
+                valueTestString: input.val(),
+                valueTest: input.val(),
+                name: input[0].name,
+                range: input[0].className,
+                groupName: input[0].alt
+              }
+            }
+            else {
+              value = {
+                idTest: input[0].id,
+                valueTestInt: input.val(),
+                valueTest: input.val(),
+                name: input[0].name,
+                range: input[0].className,
+                groupName: input[0].alt
+              }
+            }
+            chunk.push(value)
           }
-          chunk.push(value)
          });
 
          dataToSend = {
@@ -240,21 +272,110 @@ $( document ).ready(function() {
         document.getElementById('doctorNameInput').style.display = 'none'
          var creatingInputs = dataToSend.testResults;
         console.log("The data:", dataToSend.testResults);
+        var groupNameA = [];
+        var subGroupNameArray = [];
+        var rowCount = 0
         creatingInputs.forEach(function(value){
-            if(value.valueTest!== -1){
-                $('#allTheInputs')
-                .append($('<div class="row-fluid"/>')
-                    .append($('<div class="col-sm-4"/>')
-                         .append($('<h5/>',{text:value.name})))
-                            .append($('<div class="col-sm-4"/>')
-                         .append($('<h5/>',{text:value.valueTest})))
-                            .append($('<div class="col-sm-4"/>')
-                         .append($('<h5/>',{text:value.range}))))
-                    
+          var chunks = value.groupName.split("|");
+          var groupName = chunks[0]
+          var subGroupName = chunks[1]
+          var labTestType = chunks[2]
+          var showGroupName = false
+          var showSubGroupName = false
+          // if (value.valueTest!== -1) {
+            if ($.inArray(groupName, groupNameA) == -1) {
+              groupNameA.push(groupName)
+              showGroupName = true
             }
+            if ($.inArray(subGroupName, subGroupNameArray) == -1) {
+              subGroupNameArray.push(subGroupName)
+              showSubGroupName = true
+            }
+            if (showGroupName) {
+              if (rowCount == 25) {
+                rowCount = 0
+                $('#allTheInputs')
+                .append($('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><div/>'))
+                rowCount++
+              }
+              $('#allTheInputs')
+                .append($('<br><div class="row"/>')
+                    .append($('<div  class="col-md-3"/>')
+                         .append($('<h4/>',{text:''})))
+                            .append($('<div align="center" class="col-md-3"/>')
+                         .append($('<h4/>',{text:groupName})))
+                            .append($('<div class="col-md-2"/>')
+                         .append($('<h5/>',{text:''}))))
+                rowCount++
+              if (showSubGroupName) {
+                if (rowCount == 25) {
+                  rowCount = 0
+                  $('#allTheInputs')
+                  .append($('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><div/>'))
+                  rowCount++
+                }
+                $('#allTheInputs')
+                .append($('<div class="row"/>')
+                    .append($('<div align="right" class="col-md-3"/>')
+                         .append($('<h4/>',{text:subGroupName})))
+                            .append($('<div align="center" class="col-md-3"/>')
+                         .append($('<h4/>',{text:''})))
+                            .append($('<div class="col-md-2"/>')
+                         .append($('<h5/>',{text:''}))))
+                rowCount++
+              }
+              if (rowCount == 25) {
+                rowCount = 0
+                $('#allTheInputs')
+                .append($('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><div/>'))
+                rowCount++
+              }
+              $('#allTheInputs')
+                .append($('<div class="row"/>')
+                    .append($('<div align="right" class="col-md-3"/>')
+                         .append($('<h5/>',{text:value.name})))
+                            .append($('<div class="col-md-3"/>')
+                         .append($('<h5/>',{text:value.valueTest})))
+                            .append($('<div class="col-md-2"/>')
+                         .append($('<h5/>',{text:value.range}))))
+                rowCount++
+            }
+            else {
+              if (showSubGroupName) {
+                if (rowCount == 25) {
+                  rowCount = 0
+                  $('#allTheInputs')
+                  .append($('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><div/>'))
+                  rowCount++
+                }
+                $('#allTheInputs')
+                .append($('<div class="row"/>')
+                    .append($('<div align="right" class="col-md-3"/>')
+                         .append($('<h4/>',{text:subGroupName})))
+                            .append($('<div align="center" class="col-md-3"/>')
+                         .append($('<h4/>',{text:''})))
+                            .append($('<div class="col-md-2"/>')
+                         .append($('<h5/>',{text:''}))))
+                rowCount++
+              }
+              if (rowCount == 25) {
+                rowCount = 0
+                $('#allTheInputs')
+                .append($('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><div/>'))
+                rowCount++
+              }
+              $('#allTheInputs')
+                .append($('<div class="row"/>')
+                    .append($('<div align="right" class="col-md-3"/>')
+                         .append($('<h5/>',{text:value.name})))
+                            .append($('<div class="col-md-3"/>')
+                         .append($('<h5/>',{text:value.valueTest})))
+                            .append($('<div class="col-md-2"/>')
+                         .append($('<h5/>',{text:value.range}))))
+                rowCount++
+            }
+          // }
         })
-
-
     $('button#showReport').hide();
     $('button#cancel').text('Volver al Menu');
     })
