@@ -49,6 +49,7 @@
 
 
 <script src="js/jquery.js"></script>
+    <script src="js/jsPDF/dist/jspdf.min.js"></script>
 
 <script>
     
@@ -83,7 +84,7 @@ $( document ).ready(function() {
     var fullName = $.urlParam('fullName')
     var decodedUri = decodeURIComponent(fullName);
     $('#fullNamePlace').text('Nombre del Paciente: ' + decodedUri)
-    var PathToURL = "http://192.168.0.111:3000/api/labTests/" + gotTheId
+    var PathToURL = "http://10.0.1.2:3000/api/labTests/" + gotTheId
 
         $.ajax({
               type: 'GET',
@@ -206,6 +207,12 @@ $( document ).ready(function() {
           })
 
     $('#saveNow').on('click', function(){
+       
+
+
+
+
+
         var doctorName = $('#doctorName').val()
         var PathToURL = "http://192.168.0.111:3000/api/labAnalysis"
 
@@ -250,6 +257,32 @@ $( document ).ready(function() {
             testResults: chunk,
             doctorName: doctorName
          }
+
+
+         var doc = new jsPDF();
+        var textVerticalDistance = 20
+         for(var i = 0; i<chunk.length;i++){
+         doc.text(20, textVerticalDistance, chunk[i].name);
+            textVerticalDistance+= 20
+         }
+
+
+
+
+         // Optional - set properties on the document
+         doc.setProperties({
+             title: 'Title',
+             subject: 'This is the subject',
+             author: 'James Hall',
+             keywords: 'generated, javascript, web 2.0, ajax',
+             creator: 'MEEE'
+         });
+
+         // Output as Data URI
+         doc.save('Test.pdf');
+
+
+
          console.log("data to send:", dataToSend)
         $.ajax({
           method: "POST",
@@ -265,6 +298,13 @@ $( document ).ready(function() {
 
 
     $('#showReport').on('click', function(){
+
+
+
+        
+
+
+
 
         $('#allTheInputs').empty();
         var doctorNameValue = $('#doctorName').val()

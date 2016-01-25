@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <title>Laboratorio - Menú</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" >
+    <script src="js/jsPDF/dist/jspdf.min.js"></script>
 </head>
 <body class="container">
   <br>
@@ -27,7 +28,7 @@
 <script>
     $('.searchNow').on('click', function(){
     var term = $('.searchField').val()
-    var PathToURL = "http://192.168.0.111:3000/api/findPatient/"+term
+    var PathToURL = "http://10.0.1.2:3000/api/findPatient/"+term
         $('#info').empty()
         $.ajax({
               type: 'GET',
@@ -57,5 +58,8 @@
     });
 
 </script>
+
+
+
 </body>
 </html>
